@@ -17,7 +17,7 @@ namespace BitNav
             if (randomizeAddress)
             {
 
-                this.address = GenerateRandomBitcoinAddress(privateKey, 0);
+                this.address = GenerateRandomBitcoinAddress(privateKey, GenerateRandomInteger());
             }
             else
             {
@@ -30,14 +30,24 @@ namespace BitNav
             this.address = address;
         }
 
-        public static string GenerateBitcoinAddress(string privateKeyHex)
+        public string GetAddress()
+        {
+            if (randomized)
+            {
+                this.address = GenerateRandomBitcoinAddress(privateKey, GenerateRandomInteger());
+            }
+
+            return this.address;
+        }
+
+        private string GenerateBitcoinAddress(string privateKeyHex)
         {
             Key privateKey = Key.Parse(privateKeyHex, Network.Main);
             BitcoinAddress address = privateKey.PubKey.GetAddress(ScriptPubKeyType.Legacy, Network.Main);
             return address.ToString();
         }
 
-        public static string GenerateRandomBitcoinAddress(string privateKeyString, int index)
+        private string GenerateRandomBitcoinAddress(string privateKeyString, int index)
         {
 
             Network network = Network.Main;
@@ -52,6 +62,19 @@ namespace BitNav
             return address.ToString();
         }
 
+        private int GenerateRandomInteger()
+        {
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                byte[] randomBytes = new byte[4]; // 4 bytes for a 32-bit integer
+
+                rng.GetBytes(randomBytes);
+
+                int randomValue = BitConverter.ToInt32(randomBytes, 0);
+
+                return Math.Abs(randomValue);
+            }
+        }
 
     }
 }
