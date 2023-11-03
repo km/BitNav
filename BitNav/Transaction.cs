@@ -99,7 +99,46 @@ namespace BitNav
             return false;
         }
 
+        public bool checkTransactionConfirmed()
+        {
+            if (confirmationTime != null)
+            {
+                return true;
+            }
+            else if (transactionHash == null)
+            { 
+                checkTransactionReceived();
 
+                return confirmationTime != null;
+            }
+            string url = "";
+            switch (coin)
+            {
+                case Bitcoin:
+                    url = "https://api.blockcypher.com/v1/btc/main/txs/" + transactionHash;
+                    break;
+                default:
+                    throw new Exception("Invalid coin type");
+                    break;
+            }
+
+            string json = wc.DownloadString(url);
+            JsonDocument doc = JsonDocument.Parse(json);
+            JsonElement root = doc.RootElement;
+            try
+            {
+                string confirmedString = root.GetProperty("confirmed").GetString();
+                DateTime confirmeDateTime = DateTime.ParseExact(confirmedString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                this.confirmationTime = ((DateTimeOffset)confirmeDateTime).ToUnixTimeSeconds();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+            }
+
+            return false;
+        }
 
         private bool checkEqualWithMargin(int a, int b, int margin)
         {
