@@ -68,7 +68,20 @@ namespace BitNav
         {
             Transaction transaction = new Transaction(coin, amount, address);
             transactions.Add(transaction);
+            lock (unconfirmedTransactions)
+            {
+                unconfirmedTransactions.Add(transaction);
+            }
             return transaction;
+        }
+        //add transaction
+        public void AddTransaction(Transaction transaction)
+        {
+            transactions.Add(transaction);
+            lock (unconfirmedTransactions)
+            {
+                unconfirmedTransactions.Add(transaction);
+            }
         }
 
         //remove transaction
@@ -85,6 +98,11 @@ namespace BitNav
             {
                 confirmedTransactions.Remove(transaction);
             }
+        }
+
+        public List<Transaction> GetTransactions()
+        {
+            return transactions;
         }
     }
 }
