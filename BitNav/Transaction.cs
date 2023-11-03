@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BitNav
 {
@@ -21,6 +22,9 @@ namespace BitNav
         private long receivedTime;
         private long confirmationTime;
         private WebClient wc;
+        public event EventHandler<TransactionEventArgs> TransactionReceived;
+        public event EventHandler<TransactionEventArgs> TransactionConfirmed;
+
         public Transaction(object coin, int amount, string address)
         {
             this.coin = coin;
@@ -72,13 +76,14 @@ namespace BitNav
                             {
                                 transactionHash = tx.GetProperty("tx_hash").GetString();
                                 receivedTime = unixTime;
-
+                                OnTransactionReceived();
                                 //checks if confirmation time exists and parses it if it does
                                 try
                                 {
                                     string confirmedString = tx.GetProperty("confirmed").GetString();
                                     DateTime confirmeDateTime = DateTime.ParseExact(confirmedString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
                                     this.confirmationTime = ((DateTimeOffset)confirmeDateTime).ToUnixTimeSeconds();
+                                    OnTransactionConfirmed();
                                 }
                                 catch
                                 {
@@ -100,7 +105,7 @@ namespace BitNav
 
         public bool checkTransactionConfirmed()
         {
-            if (confirmationTime != null)
+            if (confirmationTime != 0)
             {
                 return true;
             }
@@ -108,7 +113,7 @@ namespace BitNav
             { 
                 checkTransactionReceived();
 
-                return confirmationTime != null;
+                return confirmationTime != 0;
             }
             string url = "";
             switch (coin)
@@ -129,7 +134,7 @@ namespace BitNav
                 string confirmedString = root.GetProperty("confirmed").GetString();
                 DateTime confirmeDateTime = DateTime.ParseExact(confirmedString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
                 this.confirmationTime = ((DateTimeOffset)confirmeDateTime).ToUnixTimeSeconds();
-
+                OnTransactionConfirmed();
                 return true;
             }
             catch (Exception e)
@@ -147,11 +152,6 @@ namespace BitNav
         public string getTransactionHash()
         {
             return transactionHash;
-        }
-
-        public string getSenderAddress()
-        {
-            return senderAddress;
         }
 
         public string getReceiverAddress()
@@ -172,6 +172,23 @@ namespace BitNav
         public long getConfirmationTime()
         {
             return confirmationTime;
+        }
+        public int getAmount()
+        {
+            return amount;
+        }
+        public object getCoin()
+        {
+            return coin;
+        }
+
+        private void OnTransactionReceived()
+        {
+            TransactionReceived?.Invoke(this, new TransactionEventArgs(this));
+        }
+        private void OnTransactionConfirmed()
+        {
+            TransactionConfirmed?.Invoke(this, new TransactionEventArgs(this));
         }
 
     }

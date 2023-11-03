@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BitNav
 {
@@ -10,6 +11,7 @@ namespace BitNav
     {
         private List<Transaction> transactions;
         private List<Transaction> confirmedTransactions;
+
 
         public TransactionManager()
         {
