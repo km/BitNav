@@ -16,18 +16,16 @@ namespace BitNav
         private object coin;
         private int amount;
         private string address;
-        private string senderAddress;
         private string transactionHash;
         private long creationTime;
         private long receivedTime;
         private long confirmationTime;
         private WebClient wc;
-        public Transaction(object coin, int amount, string address, string senderAddress = null)
+        public Transaction(object coin, int amount, string address)
         {
             this.coin = coin;
             this.amount = amount;
             this.address = address;
-            this.senderAddress = senderAddress;
             this.transactionHash = null;
             this.wc = new WebClient();
             this.creationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -74,6 +72,7 @@ namespace BitNav
                             {
                                 transactionHash = tx.GetProperty("tx_hash").GetString();
                                 receivedTime = unixTime;
+
                                 //checks if confirmation time exists and parses it if it does
                                 try
                                 {
@@ -158,6 +157,21 @@ namespace BitNav
         public string getReceiverAddress()
         {
             return address;
+        }
+
+        public long getCreationTime()
+        {
+            return creationTime;
+        }
+
+        public long getReceivedTime()
+        {
+            return receivedTime;
+        }
+
+        public long getConfirmationTime()
+        {
+            return confirmationTime;
         }
 
     }
