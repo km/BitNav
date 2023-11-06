@@ -76,7 +76,7 @@ namespace BitNav
             }
         }
 
-        private long ConvertBitcoinToSatoshis(double bitcoinAmount)
+        public static long ConvertBitcoinToSatoshis(double bitcoinAmount)
         {
             const long satoshisPerBitcoin = 100_000_000;
             return (long)(bitcoinAmount * satoshisPerBitcoin);

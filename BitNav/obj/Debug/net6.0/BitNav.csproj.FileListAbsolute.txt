@@ -10,3 +10,15 @@ C:\Users\omar\Desktop\BitNav\BitNav\obj\Debug\net6.0\BitNav.dll
 C:\Users\omar\Desktop\BitNav\BitNav\obj\Debug\net6.0\refint\BitNav.dll
 C:\Users\omar\Desktop\BitNav\BitNav\obj\Debug\net6.0\BitNav.pdb
 C:\Users\omar\Desktop\BitNav\BitNav\obj\Debug\net6.0\ref\BitNav.dll
+D:\Users\omar\source\repos\BitNav\BitNav\bin\Debug\net6.0\BitNav.deps.json
+D:\Users\omar\source\repos\BitNav\BitNav\bin\Debug\net6.0\BitNav.dll
+D:\Users\omar\source\repos\BitNav\BitNav\bin\Debug\net6.0\BitNav.pdb
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.csproj.AssemblyReference.cache
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.AssemblyInfoInputs.cache
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.AssemblyInfo.cs
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.csproj.CoreCompileInputs.cache
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.dll
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\refint\BitNav.dll
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\BitNav.pdb
+D:\Users\omar\source\repos\BitNav\BitNav\obj\Debug\net6.0\ref\BitNav.dll

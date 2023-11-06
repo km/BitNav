@@ -72,7 +72,7 @@ namespace BitNav
                         Console.WriteLine(txAmounts.GetProperty("addresses").GetString());
                         if (txAmounts.GetProperty("addresses").GetString() == address)
                         {
-                            if (checkEqualWithMargin(amount, txAmounts.GetProperty("value").GetInt32(), 0))
+                            if (checkEqualWithMargin(Bitcoin.ConvertBitcoinToSatoshis(amount), txAmounts.GetProperty("value").GetInt32(), 0))
                             {
                                 transactionHash = tx.GetProperty("tx_hash").GetString();
                                 receivedTime = unixTime;
@@ -144,7 +144,7 @@ namespace BitNav
             return false;
         }
 
-        private bool checkEqualWithMargin(int a, int b, int margin)
+        private bool checkEqualWithMargin(long a, long b, int margin)
         {
             return a >= b - margin && a <= b + margin;
         }
