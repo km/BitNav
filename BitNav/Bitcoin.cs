@@ -9,16 +9,17 @@ namespace BitNav
         private string address;
         private RandomNumberGenerator rng;
         public readonly bool randomized;
-        public Bitcoin(string privateKey, bool randomizeAddress)
+        public Bitcoin(string privateKey, string givenAddress = null)
         {
             this.privateKey = privateKey;
-            this.randomized = randomizeAddress;
+            this.randomized = false;
             rng = RandomNumberGenerator.Create();
-            if (randomizeAddress)
+            if (false)
             {
 
                 this.address = GenerateRandomBitcoinAddress(privateKey, GenerateRandomInteger());
             }
+            else if (givenAddress != null) { address = givenAddress; }
             else
             {
                 this.address = GenerateBitcoinAddress(privateKey);

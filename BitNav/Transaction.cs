@@ -54,38 +54,36 @@ namespace BitNav
             }
 
             string json = wc.DownloadString(url);
+
             JsonDocument doc = JsonDocument.Parse(json);
             JsonElement root = doc.RootElement;
-            JsonElement txs = root.GetProperty("txrefs");
+            JsonElement txs = root.GetProperty("txs");
 
             foreach (JsonElement tx in txs.EnumerateArray())
             {
 
                 string dateString = tx.GetProperty("received").GetString();
-                DateTime dateTime = DateTime.ParseExact(dateString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-                long unixTime = ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
-                if (unixTime >= creationTime)
+                long unixTime = parseToUnixTime(dateString);
+                if (unixTime > creationTime)
                 {
                     JsonElement txAmount = tx.GetProperty("outputs");
                     foreach (JsonElement txAmounts in txAmount.EnumerateArray())
                     {
-                        Console.WriteLine(txAmounts.GetProperty("addresses").GetString());
-                        if (txAmounts.GetProperty("addresses").GetString() == address)
+                        if (txAmounts.GetProperty("addresses").EnumerateArray().First().GetString() == address)
                         {
                             if (checkEqualWithMargin(Bitcoin.ConvertBitcoinToSatoshis(amount), txAmounts.GetProperty("value").GetInt32(), 0))
                             {
-                                transactionHash = tx.GetProperty("tx_hash").GetString();
+                                transactionHash = tx.GetProperty("hash").GetString();
                                 receivedTime = unixTime;
                                 OnTransactionReceived();
                                 //checks if confirmation time exists and parses it if it does
                                 try
                                 {
                                     string confirmedString = tx.GetProperty("confirmed").GetString();
-                                    DateTime confirmeDateTime = DateTime.ParseExact(confirmedString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-                                    this.confirmationTime = ((DateTimeOffset)confirmeDateTime).ToUnixTimeSeconds();
+                                    this.confirmationTime = parseToUnixTime(confirmedString);
                                     OnTransactionConfirmed();
                                 }
-                                catch
+                                catch(Exception e)
                                 {
                                 }
                                 return true;
@@ -112,7 +110,6 @@ namespace BitNav
             else if (transactionHash == null)
             { 
                 checkTransactionReceived();
-
                 return confirmationTime != 0;
             }
             string url = "";
@@ -125,15 +122,13 @@ namespace BitNav
                     throw new Exception("Invalid coin type");
                     break;
             }
-
             string json = wc.DownloadString(url);
             JsonDocument doc = JsonDocument.Parse(json);
             JsonElement root = doc.RootElement;
             try
             {
                 string confirmedString = root.GetProperty("confirmed").GetString();
-                DateTime confirmeDateTime = DateTime.ParseExact(confirmedString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-                this.confirmationTime = ((DateTimeOffset)confirmeDateTime).ToUnixTimeSeconds();
+                this.confirmationTime = parseToUnixTime(confirmedString);
                 OnTransactionConfirmed();
                 return true;
             }
@@ -190,6 +185,19 @@ namespace BitNav
         {
             TransactionConfirmed?.Invoke(this, new TransactionEventArgs(this));
         }
+        public long parseToUnixTime(string dateString)
+        {
+            int fractionalSecondsLength = dateString.Length - dateString.IndexOf('.') - 2;
 
+            if (fractionalSecondsLength != 3)
+            {
+                dateString = dateString.Substring(0, dateString.IndexOf('.') + 4) + dateString.Substring(dateString.IndexOf('Z'));
+            }
+         
+            string formatSpecifier = "yyyy-MM-ddTHH:mm:ss.fffZ";
+            DateTimeOffset dateTimeOffset = DateTimeOffset.ParseExact(dateString, formatSpecifier, CultureInfo.InvariantCulture);
+            
+            return dateTimeOffset.ToUnixTimeSeconds();
+        }
     }
 }
