@@ -15,7 +15,7 @@ namespace BitNav
     public class Transaction
     {
         private object coin;
-        private int amount;
+        private double amount;
         private string address;
         private string transactionHash;
         private long creationTime;
@@ -25,7 +25,7 @@ namespace BitNav
         public event EventHandler<TransactionEventArgs> TransactionReceived;
         public event EventHandler<TransactionEventArgs> TransactionConfirmed;
 
-        public Transaction(object coin, int amount, string address)
+        public Transaction(object coin, double amount, string address)
         {
             this.coin = coin;
             this.amount = amount;
@@ -173,7 +173,7 @@ namespace BitNav
         {
             return confirmationTime;
         }
-        public int getAmount()
+        public double getAmount()
         {
             return amount;
         }

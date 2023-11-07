@@ -64,7 +64,7 @@ namespace BitNav
 
         }
         //create Transaction
-        public Transaction CreateTransaction(object coin, int amount, string address)
+        public Transaction CreateTransaction(object coin, double amount, string address)
         {
             Transaction transaction = new Transaction(coin, amount, address);
             transactions.Add(transaction);
